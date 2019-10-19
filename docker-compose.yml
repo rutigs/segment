@@ -1,0 +1,23 @@
+version: '3'
+
+services:
+  redis:
+    image: redis:5
+    restart: always
+    ports: 
+      - "6379:6379"
+
+  redisproxy:
+    build:
+      context: .
+      dockerfile: $PWD/docker/Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - CACHE_CAPACITY=32
+      - CACHE_EXPIRY=3600
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+    restart: always
+    depends_on:
+      - redis
